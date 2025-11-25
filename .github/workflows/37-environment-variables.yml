@@ -1,0 +1,56 @@
+# Environment Variables and Secrets Workflow
+# Demonstrates environment variables and secrets usage
+# Demonstrates: env vars, secrets, environments
+
+name: 37 - Environment Variables
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  GLOBAL_VAR: 'Available in all jobs'
+  NODE_ENV: 'production'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      JOB_VAR: 'Available in this job only'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Print global env var
+        run: echo "Global var is $GLOBAL_VAR"
+
+      - name: Print job env var
+        run: echo "Job var is $JOB_VAR"
+
+      - name: Use step-level env var
+        env:
+          STEP_VAR: 'Available in this step only'
+        run: |
+          echo "Step var is $STEP_VAR"
+          echo "Can still access global - $GLOBAL_VAR"
+
+      - name: Use secrets
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          echo "API Key is set: ${{ secrets.API_KEY != '' }}"
+          # Never echo secrets directly!
+
+      - name: Use GitHub context variables
+        run: |
+          echo "Repository: ${{ github.repository }}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "SHA: ${{ github.sha }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Run ID: ${{ github.run_id }}"
+          echo "Event: ${{ github.event_name }}"

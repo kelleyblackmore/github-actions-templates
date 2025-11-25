@@ -1,0 +1,34 @@
+# Composite Action Usage Workflow
+# Demonstrates using and creating composite actions
+# Demonstrates: composite actions, action.yml
+
+name: 41 - Composite Action Usage
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Using a composite action from local repository
+      - name: Setup and build
+        uses: ./.github/actions/setup-build
+        with:
+          node-version: '20'
+          install-command: 'npm ci'
+          build-command: 'npm run build'
+
+      # Using a composite action from another repository
+      - name: Run custom health check
+        uses: owner/repo/.github/actions/health-check@v1
+        with:
+          url: 'http://localhost:3000/health'
+          timeout: 30

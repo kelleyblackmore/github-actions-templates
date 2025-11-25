@@ -1,0 +1,80 @@
+# Labeler configuration for auto-labeling PRs
+# Used by workflow 19-auto-label-prs.yml
+
+# Add 'documentation' label to any changes within 'docs' folder
+documentation:
+  - changed-files:
+      - any-glob-to-any-file: 'docs/**/*'
+      - any-glob-to-any-file: '**/*.md'
+
+# Add 'frontend' label to frontend changes
+frontend:
+  - changed-files:
+      - any-glob-to-any-file: 
+          - 'src/components/**/*'
+          - 'src/pages/**/*'
+          - 'src/styles/**/*'
+          - '**/*.css'
+          - '**/*.scss'
+
+# Add 'backend' label to backend changes
+backend:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/api/**/*'
+          - 'src/services/**/*'
+          - 'src/models/**/*'
+
+# Add 'tests' label to test changes
+tests:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.test.js'
+          - '**/*.test.ts'
+          - '**/*.spec.js'
+          - '**/*.spec.ts'
+          - 'tests/**/*'
+
+# Add 'ci' label to CI/CD changes
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/workflows/**/*'
+          - '.github/actions/**/*'
+
+# Add 'dependencies' label to dependency changes
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'package.json'
+          - 'package-lock.json'
+          - 'yarn.lock'
+          - 'requirements.txt'
+          - 'Gemfile'
+          - 'go.mod'
+          - 'Cargo.toml'
+
+# Add 'config' label to configuration changes
+config:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.config.js'
+          - '**/*.config.ts'
+          - '.env*'
+          - 'tsconfig.json'
+
+# Add 'docker' label to Docker changes
+docker:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'Dockerfile*'
+          - 'docker-compose*.yml'
+          - '.dockerignore'
+
+# Add 'infrastructure' label to IaC changes
+infrastructure:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'terraform/**/*'
+          - 'k8s/**/*'
+          - 'kubernetes/**/*'
