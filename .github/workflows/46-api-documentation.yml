@@ -12,6 +12,9 @@ on:
       - 'src/api/**'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   generate-docs:
     runs-on: ubuntu-latest

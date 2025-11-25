@@ -149,7 +149,7 @@ mkdir -p .github/workflows
 
 # Copy the basic CI workflow
 curl -o .github/workflows/ci.yml \
-  https://raw.githubusercontent.com/kelleyblackmore/github-actions-templates/main/.github/workflows/01-ci-basic.yml
+  https://raw.githubusercontent.com/$OWNER/$REPO/main/.github/workflows/01-ci-basic.yml
 ```
 
 ## Usage
