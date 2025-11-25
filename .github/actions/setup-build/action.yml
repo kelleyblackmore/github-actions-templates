@@ -1,0 +1,42 @@
+name: 'Setup and Build'
+description: 'Sets up Node.js and builds the project'
+author: 'Your Name'
+
+inputs:
+  node-version:
+    description: 'Node.js version to use'
+    required: false
+    default: '20'
+  install-command:
+    description: 'Command to install dependencies'
+    required: false
+    default: 'npm ci'
+  build-command:
+    description: 'Command to build the project'
+    required: false
+    default: 'npm run build'
+
+outputs:
+  build-path:
+    description: 'Path to build output'
+    value: ${{ steps.build.outputs.path }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      shell: bash
+      run: ${{ inputs.install-command }}
+
+    - name: Build project
+      id: build
+      shell: bash
+      run: |
+        ${{ inputs.build-command }}
+        echo "path=dist" >> $GITHUB_OUTPUT

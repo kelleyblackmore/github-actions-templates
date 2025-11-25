@@ -1,0 +1,37 @@
+# Reusable Deploy Workflow
+# A reusable workflow for deploying applications
+# Demonstrates: workflow_call trigger, environment deployment
+
+name: 39b - Reusable Deploy
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        type: string
+    secrets:
+      deploy-key:
+        description: 'Deployment key'
+        required: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: dist/
+
+      - name: Deploy to ${{ inputs.environment }}
+        run: |
+          echo "Deploying to ${{ inputs.environment }} environment..."
+          ls -la dist/

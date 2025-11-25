@@ -1,0 +1,28 @@
+# Reusable Workflow - Caller
+# Demonstrates reusable workflows (calling other workflows)
+# Demonstrates: workflow_call, reusable workflows
+
+name: 39 - Reusable Workflow Caller
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  call-build-workflow:
+    uses: ./.github/workflows/39a-reusable-build.yml
+    with:
+      node-version: '20'
+      run-tests: true
+    secrets:
+      npm-token: ${{ secrets.NPM_TOKEN }}
+
+  call-deploy-workflow:
+    needs: call-build-workflow
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/39b-reusable-deploy.yml
+    with:
+      environment: production
+    secrets: inherit

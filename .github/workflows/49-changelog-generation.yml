@@ -1,0 +1,74 @@
+# Changelog Generation Workflow
+# Automatically generates changelog from commits
+# Demonstrates: changelog generation, conventional commits
+
+name: 49 - Changelog Generation
+
+on:
+  push:
+    branches: [main]
+  release:
+    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  generate-changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate changelog
+        id: changelog
+        uses: mikepenz/release-changelog-builder-action@v4
+        with:
+          configuration: |
+            {
+              "categories": [
+                {
+                  "title": "## 🚀 Features",
+                  "labels": ["feature", "enhancement"]
+                },
+                {
+                  "title": "## 🐛 Bug Fixes",
+                  "labels": ["bug", "fix"]
+                },
+                {
+                  "title": "## 📚 Documentation",
+                  "labels": ["documentation", "docs"]
+                },
+                {
+                  "title": "## 🔧 Maintenance",
+                  "labels": ["chore", "maintenance", "dependencies"]
+                }
+              ],
+              "template": "#{{CHANGELOG}}\n\n**Full Changelog**: #{{RELEASE_DIFF}}",
+              "pr_template": "- #{{TITLE}} by @#{{AUTHOR}} in ##{{NUMBER}}"
+            }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update CHANGELOG.md
+        if: github.event_name == 'release'
+        run: |
+          echo "${{ steps.changelog.outputs.changelog }}" | cat - CHANGELOG.md > temp && mv temp CHANGELOG.md
+
+      - name: Commit changelog
+        if: github.event_name == 'release'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'docs: update changelog for ${{ github.event.release.tag_name }}'
+          file_pattern: 'CHANGELOG.md'
+
+      - name: Update release notes
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          body: ${{ steps.changelog.outputs.changelog }}
+          append_body: false
